@@ -1,0 +1,21 @@
+# Build artifacts
+*.exe
+*.obj
+*.lib
+*.dll
+*.pdb
+
+# Intermediate files
+Debug/
+Release/
+x64/
+
+# Visual Studio specific
+*.suo
+*.user
+*.VC.db
+.vs/
+
+# Temporary files
+*.log
+*.tmp
