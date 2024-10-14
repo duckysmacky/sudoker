@@ -22,7 +22,7 @@ private:
     }
 
     // Returns a 3x3 area from one of the 9 sections of the Sudoku grid
-    int* get_section(int x, int y)
+    int* get_section(int x, int y) const
     {
         int section[9] = { 0 };
         int section_x = 3 * (x / 3), section_y = 3 * (y / 3);
@@ -73,26 +73,25 @@ public:
 
     SudokuGame(int fill_numbers = 21)
     {
-        if (verbose) std::cout << "Filling " << fill_numbers << " numbers\n";
+        std::cout << "Filling the grid with " << fill_numbers << " numbers\n";
+
         while (fill_numbers > 0)
         {
             int x = randint(0, 8), y = randint(0, 8);
             int number = randint(1, 9);
+
             if (can_place(number, x, y))
             {
                 grid[y][x] = number;
-                if (verbose)
-                {
-                    std::cout << "Placed " << number << " at [" << x << "; " << y << "]\n";
-                    std::cout << fill_numbers << " left to place\n";
-                }
                 fill_numbers--;
             }
         }
-        if (verbose) std::cout << "Finished creating a new grid!\n";
+
+        std::cout << "Finished creating a new grid!\n";
     }
 
-    void print_grid()
+    // Outputs the grid in a pretty way
+    void print_grid() const
     {
         for (int y = 0; y < std::size(grid); y++)
         {
@@ -121,6 +120,7 @@ public:
 
 };
 
+// Returns a random integer between max and min inclusively
 static int randint(int min, int max)
 {
     return rand() % (abs(max - min) + 1) + min;
