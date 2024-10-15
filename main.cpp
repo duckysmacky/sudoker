@@ -117,6 +117,8 @@ public:
         std::cout << std::endl;
     }
 
+    // Solves the current Sudoku grid by brute-forcing every position
+    // Goes from left to right, top to bottom while trying to place numbers until they fit it
     void solve(int delay_ms = 1)
     {
         int x = 0, y = 0;
@@ -129,6 +131,7 @@ public:
             // check if not out of bounds
             if (x < 0)
             {
+                // move up the line
                 if (y > 0)
                 {
                     y--;
@@ -167,8 +170,10 @@ public:
                 break;
             }
 
+            // we increment the number each time we change a position
             int num = grid[y][x] + 1;
 
+            // move back when already tried every number at given position
             if (num > 9)
             {
                 print_grid();
@@ -178,6 +183,8 @@ public:
                 continue;
             }
 
+            // increment the number until can be placed
+            // if tried everything, mark as failed and go back later
             while (!(result = can_place(num, x, y)))
             {
                 if (num < 9)
@@ -192,6 +199,7 @@ public:
                 }
             }
 
+            // if was able to find a suitable number set it at the current coodniates, else go back and set current to zero
             if (result)
             {
                 grid[y][x] = num;
@@ -220,12 +228,12 @@ public:
 // Returns a random integer between max and min inclusively
 static int randint(int min, int max)
 {
-    //srand(time(0));
     return rand() % (abs(max - min) + 1) + min;
 }
 
 int main()
 {
+    srand(time(0));
     SudokuGame game;
     game.be_verbose(false);
     game.print_grid();
