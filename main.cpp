@@ -9,6 +9,7 @@ class SudokuGame {
 private:
     const int size = 9;
     int grid[9][9] = { 0 };
+    std::set<std::array<int, 2>> filled_numbers_coordinates;
     bool verbose = false;
 
     // Checks if the number doesn't appear in any of the groups to be considered unique
@@ -72,22 +73,6 @@ private:
         return is_unique(number, groups);
     }
 
-    // Finds the coordinates of the numbers which were originalled placed (filled on creation)
-    std::set<std::array<int, 2>> find_filled_numbers() const
-    {
-        std::set<std::array<int, 2>> coordinates; // max possible numbers to fill is 81
-
-        for (int y = 0; y < size; y++)
-        {
-            for (int x = 0; x < size; x++)
-            {
-                if (grid[y][x] != 0) coordinates.insert({ x, y });
-            }
-        }
-
-        return coordinates;
-    }
-
 public:
     SudokuGame(int numbers_to_fill = 21)
     {
@@ -101,6 +86,7 @@ public:
             if (can_place(number, x, y))
             {
                 grid[y][x] = number;
+                filled_numbers_coordinates.insert({ x, y });
                 numbers_to_fill--;
             }
         }
@@ -131,9 +117,8 @@ public:
         std::cout << std::endl;
     }
 
-    void solve(int delay_ms = 100)
+    void solve(int delay_ms = 1)
     {
-        std::set<std::array<int, 2>> skip_coordinates = find_filled_numbers();
         int x = 0, y = 0;
         bool result = true;
 
@@ -158,10 +143,10 @@ public:
             }
 
             // check if the current coordinates are not for filled numbers
-            if (skip_coordinates.find({ x, y }) != skip_coordinates.end())
+            if (filled_numbers_coordinates.find({ x, y }) != filled_numbers_coordinates.end())
             {
-                if (verbose) std::cout << "Skipping number at (" << x << "; " << y << ")\n";
                 print_grid();
+                if (verbose) std::cout << "Skipping number at (" << x << "; " << y << ")\n";
                 if (result) x++;
                 else x--;
                 continue;
@@ -186,8 +171,8 @@ public:
 
             if (num > 9)
             {
-                if (verbose) std::cout << "Number " << num - 1 << " at (" << x << "; " << y << ") is already max! Going back\n";
                 print_grid();
+                if (verbose) std::cout << "Number " << num - 1 << " at (" << x << "; " << y << ") is already max! Going back\n";
                 grid[y][x] = 0;
                 x--;
                 continue;
@@ -210,77 +195,17 @@ public:
             if (result)
             {
                 grid[y][x] = num;
-                if (verbose) std::cout << "Found number " << num << " at (" << x << "; " << y << ")!\n";
                 print_grid();
+                if (verbose) std::cout << "Found number " << num << " at (" << x << "; " << y << ")!\n";
                 x++;
             }
             else
             {
                 grid[y][x] = 0;
-                if (verbose) std::cout << "Failed to placing anything at (" << x << "; " << y << ")! Going back\n";
                 print_grid();
+                if (verbose) std::cout << "Failed to placing anything at (" << x << "; " << y << ")! Going back\n";
                 x--;
             }
-        }
-    }
-
-    void solve_old()
-    {
-        std::set<std::array<int, 2>> skip_coordinates = find_filled_numbers();
-        bool result = true;
-        int x = 0, y = 0;
-
-        while (y < size)
-        {
-            x = (x >= 0) ? 0 : 8;
-
-            while (x < size)
-            {
-                // check if the current coordinates are not for filled numbers
-                if (skip_coordinates.find({ x, y }) != skip_coordinates.end())
-                {
-                    if (result || x == 0) x++;
-                    else if (x != 0) x--;
-                }
-
-                if (x == 8)
-                {
-                    x = 0;
-                    y++;
-                }
-
-                int num = grid[y][x] + 1;
-                while (!(result = can_place(num, x, y)))
-                {
-                    if (verbose) std::cout << "Trying number " << num << " at (" << x << "; " << y << ")\n";
-
-                    if (num < 9) num++;
-                    else
-                    {
-                        if (verbose) std::cout << "Failed to placing anything at (" << x << "; " << y << "). Going back\n";
-                        num = 0;
-                        grid[y][x] = 0;
-                        print_grid();
-                        x--;
-                        break;
-                    }
-                }
-
-                if (result)
-                {
-                    grid[y][x] = num;
-                    if (verbose) std::cout << "Found number " << num << " at (" << x << "; " << y << ")!\n";
-                    print_grid();
-                    x++;
-                }
-            }
-
-            if (x < 0 && y != 0)
-            {
-                y--;
-                x = 8;
-            }
-            else y++;
         }
     }
 
@@ -304,5 +229,5 @@ int main()
     SudokuGame game;
     game.be_verbose(false);
     game.print_grid();
-    game.solve(10);
+    game.solve();
 }
