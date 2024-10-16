@@ -97,7 +97,7 @@ public:
     // Outputs the grid in a pretty way
     void print_grid() const
     {
-        system("cls");
+        system("cls"); // slows down the whole program, looking for alternatives to draw the grid
         for (int y = 0; y < size; y++)
         {
             if (y % 3 == 0)
@@ -177,7 +177,7 @@ public:
             if (num > 9)
             {
                 print_grid();
-                if (verbose) std::cout << "Number " << num - 1 << " at (" << x << "; " << y << ") is already max! Going back\n";
+                if (verbose) std::cout << "All numbers were tried for (" << x << "; " << y << ")! Going back\n";
                 grid[y][x] = 0;
                 x--;
                 continue;
