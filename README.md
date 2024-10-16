@@ -2,7 +2,7 @@
 
 An efficient Sudoku grid generator and solver written in C++
 
-![solved grid](https://imgur.com/a/M6RYR3z)
+![solved grid](https://i.imgur.com/3EMgI6O.png)
 
 ---
 
