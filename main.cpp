@@ -13,68 +13,6 @@ private:
     std::set<std::array<int, 2>> filled_numbers_coordinates;
     bool verbose = false;
 
-    // Checks if the number doesn't appear in any of the groups to be considered unique
-    // Each group is a vertical line, horizontal line and one of the 3x3 sections
-    bool is_unique(int number, int* groups[3])
-    {
-        for (int g = 0; g < 3; g++)
-        {
-            for (int i = 0; i < 9; i++)
-            {
-                if (groups[g][i] == number) return false;
-            }
-        }
-        return true;
-    }
-
-    // Fills a 3x3 area from one of the 9 sections of the Sudoku grid
-    void fill_section(int* section, int x, int y) const
-    {
-        int section_x = 3 * (x / 3), section_y = 3 * (y / 3);
-
-        int i = 0;
-        for (int row = section_y; row < section_y + 3; row++)
-        {
-            for (int col = section_x; col < section_x + 3; col++)
-            {
-                section[i] = grid[row][col];
-                i++;
-            }
-        }
-    }
-
-    // Checks the grid if the number can be placed at the given coordinates
-    bool can_place(int number, int nx, int ny)
-    {
-        if (nx < 0 || ny < 0) return false;
-
-        int h_line[9] = { 0 };
-        int v_line[9] = { 0 };
-        int section[9] = { 0 };
-
-        // Iterate over the grid and get the horizontal and vertical axis from the target coordinates
-        for (int i = 0; i < size; i++)
-            h_line[i] = grid[ny][i];
-
-        int i = 0;
-        for (int y = 0; y < size; y++)
-        {
-            for (int x = 0; x < size; x++)
-            {
-                if (x == nx)
-                {
-                    v_line[i] = grid[y][x];
-                    i++;
-                }
-            }
-        }
-
-        fill_section(section, nx, ny);
-
-        int* groups[3] = { h_line, v_line, section };
-        return is_unique(number, groups);
-    }
-
 public:
     SudokuGame(int numbers_to_fill = 21)
     {
@@ -225,6 +163,69 @@ public:
         verbose = value;
     }
 
+private:
+    // Checks if the number doesn't appear in any of the groups to be considered unique
+    // Each group is a vertical line, horizontal line and one of the 3x3 sections
+    bool is_unique(int number, int* groups[3])
+    {
+        for (int g = 0; g < 3; g++)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                if (groups[g][i] == number) return false;
+            }
+        }
+        return true;
+    }
+
+    // Fills a 3x3 area from one of the 9 sections of the Sudoku grid
+    void fill_section(int* section, int x, int y) const
+    {
+        int section_x = 3 * (x / 3), section_y = 3 * (y / 3);
+
+        int i = 0;
+        for (int row = section_y; row < section_y + 3; row++)
+        {
+            for (int col = section_x; col < section_x + 3; col++)
+            {
+                section[i] = grid[row][col];
+                i++;
+            }
+        }
+    }
+
+    // Checks the grid if the number can be placed at the given coordinates
+    bool can_place(int number, int nx, int ny)
+    {
+        if (nx < 0 || ny < 0) return false;
+
+        int h_line[9] = { 0 };
+        int v_line[9] = { 0 };
+        int section[9] = { 0 };
+
+        // Iterate over the grid and get the horizontal and vertical axis from the target coordinates
+        for (int i = 0; i < size; i++)
+            h_line[i] = grid[ny][i];
+
+        int i = 0;
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                if (x == nx)
+                {
+                    v_line[i] = grid[y][x];
+                    i++;
+                }
+            }
+        }
+
+        fill_section(section, nx, ny);
+
+        int* groups[3] = { h_line, v_line, section };
+        return is_unique(number, groups);
+    }
+
 };
 
 // Returns a random integer between max and min inclusively
@@ -236,8 +237,16 @@ static int randint(int min, int max)
 int main()
 {
     srand(time(0));
+
     SudokuGame game;
     game.be_verbose(false);
     game.print_grid();
+
+    auto time_start = std::chrono::high_resolution_clock::now();
     game.solve();
+    auto time_end = std::chrono::high_resolution_clock::now();
+
+    auto time_taken = std::chrono::duration_cast<std::chrono::milliseconds>(time_end - time_start);
+    std::cout << "Time taken: " << time_taken.count() << "ms" << std::endl;
+    return 0;
 }
