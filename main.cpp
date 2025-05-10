@@ -1,7 +1,8 @@
 #include <iostream>
 #include <set>
 #include <array>
-#include <windows.h>
+#include <chrono>
+#include <thread>
 
 static int randint(int min, int max);
 
@@ -14,7 +15,7 @@ private:
 
     // Checks if the number doesn't appear in any of the groups to be considered unique
     // Each group is a vertical line, horizontal line and one of the 3x3 sections
-    bool is_unique(int number, int *groups[3])
+    bool is_unique(int number, int* groups[3])
     {
         for (int g = 0; g < 3; g++)
         {
@@ -26,12 +27,11 @@ private:
         return true;
     }
 
-    // Returns a 3x3 area from one of the 9 sections of the Sudoku grid
-    int* get_section(int x, int y) const
+    // Fills a 3x3 area from one of the 9 sections of the Sudoku grid
+    void fill_section(int* section, int x, int y) const
     {
-        int section[9] = { 0 };
         int section_x = 3 * (x / 3), section_y = 3 * (y / 3);
-        
+
         int i = 0;
         for (int row = section_y; row < section_y + 3; row++)
         {
@@ -41,8 +41,6 @@ private:
                 i++;
             }
         }
-
-        return section;
     }
 
     // Checks the grid if the number can be placed at the given coordinates
@@ -50,10 +48,13 @@ private:
     {
         if (nx < 0 || ny < 0) return false;
 
-        // Iterate over the grid and get the horizontal and vertical axis from the target coordinates
         int h_line[9] = { 0 };
-        for (int i = 0; i < size; i++) h_line[i] = grid[ny][i];
         int v_line[9] = { 0 };
+        int section[9] = { 0 };
+
+        // Iterate over the grid and get the horizontal and vertical axis from the target coordinates
+        for (int i = 0; i < size; i++)
+            h_line[i] = grid[ny][i];
 
         int i = 0;
         for (int y = 0; y < size; y++)
@@ -68,8 +69,9 @@ private:
             }
         }
 
-        int *section = get_section(nx, ny);
-        int *groups[3] = { h_line, v_line, section };
+        fill_section(section, nx, ny);
+
+        int* groups[3] = { h_line, v_line, section };
         return is_unique(number, groups);
     }
 
@@ -126,7 +128,7 @@ public:
 
         while (true)
         {
-            if (delay_ms != 0) Sleep(delay_ms);
+            if (delay_ms != 0) std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
 
             // check if not out of bounds
             if (x < 0)
