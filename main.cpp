@@ -3,7 +3,7 @@
 #include <array>
 #include <windows.h>
 
-int randint(int min, int max);
+static int randint(int min, int max);
 
 class SudokuGame {
 private:
