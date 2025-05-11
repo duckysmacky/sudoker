@@ -15,6 +15,7 @@ x64/
 *.user
 *.VC.db
 .vs/
+.vscode/
 
 # Temporary files
 *.log
