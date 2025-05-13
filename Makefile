@@ -1,7 +1,8 @@
-CC = g++
+CC := g++
+SRC := src/main.cpp src/SudokuField.cpp src/SudokuSolver.cpp
 
 debug:
-	$(CC) main.cpp -o sudocker -g
+	$(CC) $(SRC) -o sudoker -g
 
 release:
-	$(CC) main.cpp -o sudoker -O3
+	$(CC) $(SRC) -o sudoker -O3
