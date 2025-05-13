@@ -1,4 +1,7 @@
 CC = g++
 
-build:
-	$(CC) main.cpp -o sudoker
+debug:
+	$(CC) main.cpp -o sudocker -g
+
+release:
+	$(CC) main.cpp -o sudoker -O3
