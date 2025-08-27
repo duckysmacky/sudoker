@@ -6,13 +6,13 @@
 class SudokuSolver
 {
 private:
-    // Pointer to the field to solve
-    SudokuField* m_field;
+    // Reference to the field to solve
+    SudokuField& m_field;
     bool m_be_verbose;
     bool m_hide_grid;
 
 public:
-    SudokuSolver(SudokuField* field);
+    SudokuSolver(SudokuField& field);
 
     // Solves the current Sudoku grid by brute-forcing every position
     // Goes from left to right, top to bottom while trying to place numbers until they fit it

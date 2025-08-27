@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
         args.push_back(argv[i]);
 
     SudokuField field = SudokuField();
-    SudokuSolver solver = SudokuSolver(&field);
+    SudokuSolver solver = SudokuSolver(field);
     parse_args(args, field, solver);
 
     system("clear");
