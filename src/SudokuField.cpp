@@ -7,6 +7,7 @@
 SudokuField::SudokuField(int size)
     : m_size(size), m_grid{ 0 }
 {
+    srand(time(0));
 }
 
 void SudokuField::fill_grid(int numbers_to_fill)
@@ -18,7 +19,7 @@ void SudokuField::fill_grid(int numbers_to_fill)
         int x = randint(0, 8), y = randint(0, 8);
         int number = randint(1, 9);
 
-        if (can_place(number, x, y))
+        if (can_place(number, x, y) && m_grid[y][x] == 0)
         {
             m_grid[y][x] = number;
             m_filled_numbers_coordinates.insert({ x, y });

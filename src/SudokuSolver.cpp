@@ -5,7 +5,7 @@
 #include <chrono>
 
 SudokuSolver::SudokuSolver(SudokuField* field)
-    : m_field(field), m_be_verbose(false), m_show_grid(true)
+    : m_field(field), m_be_verbose(false), m_hide_grid(false)
 {
 }
 
@@ -18,6 +18,8 @@ void SudokuSolver::solve()
     std::cout << "Started solving..." << std::endl;
     while (true)
     {
+        if (!m_hide_grid && iteration % 500 == 0) m_field->print_grid();
+
         // check if not out of bounds
         if (x < 0)
         {
@@ -38,7 +40,6 @@ void SudokuSolver::solve()
         // check if the current coordinates are not for filled numbers
         if (!m_field->is_preset(x, y))
         {
-            if (m_show_grid) m_field->print_grid();
             if (m_be_verbose) std::cout << "Skipping number at (" << x << "; " << y << ")\n";
             if (result) x++;
             else x--;
@@ -67,7 +68,6 @@ void SudokuSolver::solve()
         // move back when already tried every number at given position
         if (num > 9)
         {
-            if (m_show_grid) m_field->print_grid();
             if (m_be_verbose) std::cout << "All numbers were tried for (" << x << "; " << y << ")! Going back\n";
             m_field->m_grid[y][x] = 0;
             x--;
@@ -104,7 +104,7 @@ void SudokuSolver::solve()
             x--;
         }
 
-        if (m_show_grid && iteration % 500 == 0) m_field->print_grid();
+        if (!m_hide_grid && iteration % 500 == 0) m_field->print_grid();
 
         iteration++;
     }
@@ -115,7 +115,7 @@ void SudokuSolver::be_verbose(bool value)
     m_be_verbose = value;
 }
 
-void SudokuSolver::show_grid(bool value)
+void SudokuSolver::hide_grid(bool value)
 {
-    m_show_grid = value;
+    m_hide_grid = value;
 }

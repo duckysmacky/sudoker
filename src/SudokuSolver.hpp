@@ -9,7 +9,7 @@ private:
     // Pointer to the field to solve
     SudokuField* m_field;
     bool m_be_verbose;
-    bool m_show_grid;
+    bool m_hide_grid;
 
 public:
     SudokuSolver(SudokuField* field);
@@ -20,8 +20,8 @@ public:
 
     // Toggle verbose text output
     void be_verbose(bool value);
-    // Toggle constant field output
-    void show_grid(bool value);
+    // Toggle grid visibility
+    void hide_grid(bool value);
 };
 
 #endif
