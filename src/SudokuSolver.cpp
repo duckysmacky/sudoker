@@ -4,23 +4,20 @@
 #include <thread>
 #include <chrono>
 
-#include "SudokuSolver.hpp"
-
 SudokuSolver::SudokuSolver(SudokuField* field)
     : m_field(field), m_be_verbose(false), m_show_grid(true)
 {
 }
 
-void SudokuSolver::solve(int delay_ms)
+void SudokuSolver::solve()
 {
     int x = 0, y = 0;
+    int iteration = 0;
     bool result = true;
 
     std::cout << "Started solving..." << std::endl;
     while (true)
     {
-        if (delay_ms != 0) std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
-
         // check if not out of bounds
         if (x < 0)
         {
@@ -97,17 +94,19 @@ void SudokuSolver::solve(int delay_ms)
         if (result)
         {
             m_field->m_grid[y][x] = num;
-            if (m_show_grid) m_field->print_grid();
             if (m_be_verbose) std::cout << "Found number " << num << " at (" << x << "; " << y << ")!\n";
             x++;
         }
         else
         {
             m_field->m_grid[y][x] = 0;
-            if (m_show_grid) m_field->print_grid();
             if (m_be_verbose) std::cout << "Failed to placing anything at (" << x << "; " << y << ")! Going back\n";
             x--;
         }
+
+        if (m_show_grid && iteration % 500 == 0) m_field->print_grid();
+
+        iteration++;
     }
 }
 

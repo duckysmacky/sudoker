@@ -67,7 +67,7 @@ bool SudokuField::is_preset(int x, int y) const
 
 void SudokuField::print_grid() const
 {
-    system("cls"); // slows down the whole program, looking for alternatives to draw the grid
+    std::cout << "\033[H";
 
     for (int y = 0; y < m_size; y++)
     {
@@ -84,7 +84,10 @@ void SudokuField::print_grid() const
             if (x == 8) std::cout << "|\n";
         }
     }
-    for (int i = 0; i < 25; i++) std::cout << "-";
+
+    for (int i = 0; i < 25; i++)
+        std::cout << "-";
+
     std::cout << std::endl;
 }
 

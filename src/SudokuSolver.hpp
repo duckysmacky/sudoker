@@ -16,7 +16,7 @@ public:
 
     // Solves the current Sudoku grid by brute-forcing every position
     // Goes from left to right, top to bottom while trying to place numbers until they fit it
-    void solve(int delay_ms = 1);
+    void solve();
 
     // Toggle verbose text output
     void be_verbose(bool value);

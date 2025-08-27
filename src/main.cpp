@@ -59,6 +59,7 @@ int main(int argc, char* argv[])
     SudokuSolver solver = SudokuSolver(&field);
     parse_args(args, field, solver);
 
+    system("clear");
     field.print_grid();
     std::cout << "Ready to solve. Press ENTER to start solving" << std::endl;
     std::cin.get();
