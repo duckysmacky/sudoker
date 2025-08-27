@@ -32,15 +32,15 @@ void SudokuSolver::solve()
             }
             else
             {
-                std::cout << "Error: index out of bounds! Exiting\n";
+                std::cerr << "Error: index out of bounds! Exiting\n";
                 break;
             }
         }
 
         // check if the current coordinates are not for filled numbers
-        if (!m_field->is_preset(x, y))
+        if (!m_field->is_preset(y, x))
         {
-            if (m_be_verbose) std::cout << "Skipping number at (" << x << "; " << y << ")\n";
+            if (m_be_verbose) std::cout << "Skipping number at (" << y << "; " << x << ")\n";
             if (result) x++;
             else x--;
             continue;
@@ -58,7 +58,7 @@ void SudokuSolver::solve()
         if (y == 9)
         {
             m_field->print_grid();
-            std::cout << "Done!\n";
+            std::cout << "\nDone!" << std::endl;
             break;
         }
 
@@ -68,7 +68,7 @@ void SudokuSolver::solve()
         // move back when already tried every number at given position
         if (num > 9)
         {
-            if (m_be_verbose) std::cout << "All numbers were tried for (" << x << "; " << y << ")! Going back\n";
+            if (m_be_verbose) std::cout << "All numbers were tried for (" << y << "; " << x << ")! Going back\n";
             m_field->m_grid[y][x] = 0;
             x--;
             continue;
@@ -76,12 +76,12 @@ void SudokuSolver::solve()
 
         // increment the number until can be placed
         // if tried everything, mark as failed and go back later
-        while (!(result = m_field->can_place(num, x, y)))
+        while (!(result = m_field->can_place(num, y, x)))
         {
             if (num < 9)
             {
                 num++;
-                if (m_be_verbose) std::cout << "Trying number " << num << " at (" << x << "; " << y << ")\n";
+                if (m_be_verbose) std::cout << "Trying number " << num << " at (" << y << "; " << x << ")\n";
                 continue;
             }
             else
@@ -94,13 +94,13 @@ void SudokuSolver::solve()
         if (result)
         {
             m_field->m_grid[y][x] = num;
-            if (m_be_verbose) std::cout << "Found number " << num << " at (" << x << "; " << y << ")!\n";
+            if (m_be_verbose) std::cout << "Found number " << num << " at (" << y << "; " << x << ")!\n";
             x++;
         }
         else
         {
             m_field->m_grid[y][x] = 0;
-            if (m_be_verbose) std::cout << "Failed to placing anything at (" << x << "; " << y << ")! Going back\n";
+            if (m_be_verbose) std::cout << "Failed to placing anything at (" << y << "; " << x << ")! Going back\n";
             x--;
         }
 
