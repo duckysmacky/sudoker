@@ -22,7 +22,7 @@ void SudokuField::fill_grid(int numbers_to_fill)
         if (can_place(number, y, x) && m_grid[y][x] == 0)
         {
             m_grid[y][x] = number;
-            m_filled_numbers_coordinates.insert({ y, x });
+            m_preset_coordinates.insert({ y, x });
             numbers_to_fill--;
         }
     }
@@ -34,26 +34,31 @@ bool SudokuField::can_place(int number, int row, int column) const
 {
     if (row < 0 || row >= FIELD_SIZE || column < 0 || column >= FIELD_SIZE) return false;
 
-    int h_line[FIELD_SIZE] = { 0 };
-    int v_line[FIELD_SIZE] = { 0 };
-    int section[FIELD_SIZE] = { 0 };
+    // check the vertical line
+    for (int y = 0; y < FIELD_SIZE; y++) {
+        if (y != row && m_grid[y][column] == number) return false;
+    }
 
-    // Iterate over the grid and get the horizontal and vertical axis from the target coordinates
-    for (int i = 0; i < FIELD_SIZE; i++)
-        h_line[i] = m_grid[row][i];
+    // check the horizontal line
+    for (int x = 0; x < FIELD_SIZE; x++) {
+        if (x != column && m_grid[row][x] == number) return false;
+    }
 
-    for (int i = 0; i < FIELD_SIZE; i++)
-        v_line[i] = m_grid[i][column];
+    // check the 3x3 section
+    int section_row = 3 * (row / 3);
+    int section_column = 3 * (column / 3);
+    for (int y = section_row; y < section_row + 3; y++) {
+        for (int x = section_column; x < section_column + 3; x++) {
+            if (y != row && x != column && m_grid[y][x] == number) return false;
+        }
+    }
 
-    fill_section(section, row, column);
-
-    int* groups[3] = { h_line, v_line, section };
-    return is_unique(number, groups);
+    return true;
 }
 
 bool SudokuField::is_preset(int row, int column) const
 {
-    return m_filled_numbers_coordinates.find({ row, column }) == m_filled_numbers_coordinates.end();
+    return m_preset_coordinates.find({ row, column }) != m_preset_coordinates.end();
 }
 
 void SudokuField::print_grid() const
@@ -80,34 +85,6 @@ void SudokuField::print_grid() const
         std::cout << "-";
 
     std::cout << std::endl;
-}
-
-void SudokuField::fill_section(int* section, int row, int column) const
-{
-    int section_y = 3 * (row / 3);
-    int section_x = 3 * (column / 3);
-
-    int i = 0;
-    for (int y = section_y; y < section_y + 3; y++)
-    {
-        for (int x = section_x; x < section_x + 3; x++)
-        {
-            section[i] = m_grid[y][x];
-            i++;
-        }
-    }
-}
-
-bool SudokuField::is_unique(int number, int* groups[3]) const
-{
-    for (int g = 0; g < 3; g++)
-    {
-        for (int i = 0; i < FIELD_SIZE; i++)
-        {
-            if (groups[g][i] == number) return false;
-        }
-    }
-    return true;
 }
 
 int SudokuField::randint(int min, int max) const

@@ -14,7 +14,7 @@ public:
 
 private:
     // Coordinates of pre-set numbers
-    std::set<std::array<int, 2>> m_filled_numbers_coordinates;
+    std::set<std::array<int, 2>> m_preset_coordinates;
 
 public:
     SudokuField();
@@ -33,13 +33,6 @@ public:
     void print_grid() const;
 
 private:
-    // Fills a 3x3 area from one of the 9 sections of the Sudoku grid
-    void fill_section(int* section, int row, int column) const;
-
-    // Checks if the number doesn't appear in any of the groups to be considered unique
-    // Each group is a vertical line, horizontal line and one of the 3x3 sections
-    bool is_unique(int number, int* groups[3]) const;
-
     // Returns a random integer between max and min inclusively
     int randint(int min, int max) const;
 };
