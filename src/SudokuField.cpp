@@ -5,14 +5,14 @@
 #include <iostream>
 
 SudokuField::SudokuField()
-    : m_grid{ 0 }
+    : m_grid{ 0 }, m_has_field(false)
 {
     srand(time(0));
 }
 
-void SudokuField::fill_grid(int numbers_to_fill)
+void SudokuField::generate_grid(int numbers_to_fill)
 {
-    std::cout << "Filling the grid with " << numbers_to_fill << " numbers\n";
+    std::cout << "Filling the grid with " << numbers_to_fill << " numbers..." << std::endl;
 
     while (numbers_to_fill > 0)
     {
@@ -27,7 +27,41 @@ void SudokuField::fill_grid(int numbers_to_fill)
         }
     }
 
-    std::cout << "Finished creating a new grid!\n";
+    std::cout << "Finished creating a new Sudoku grid!" << std::endl;
+    m_has_field = true;
+}
+
+void SudokuField::load_grid(int grid[9][9])
+{
+    for (int y = 0; y < FIELD_SIZE; y++)
+    {
+        for (int x = 0; x < FIELD_SIZE; x++)
+        {
+            if (grid[y][x] < 0 || grid[y][x] > 9)
+            {
+                std::cerr << "Unable to load a Sudoku field: invalid number " << grid[y][x]
+                    << " at (" << y << "; " << x << "). Valid range is [0; 9]" << std::endl;
+                m_has_field = false;
+                return;
+            }
+
+            if (grid[y][x] != 0 && !can_place(grid[y][x], y, x))
+            {
+                std::cerr << "Unable to load a Sudoku field: invalid placement of number "
+                    << grid[y][x] << " at (" << y << "; " << x << ")" << std::endl;
+                m_has_field = false;
+                return;
+            }
+
+            m_grid[y][x] = grid[y][x];
+
+            if (grid[y][x] != 0)
+                m_preset_coordinates.insert({ y, x });
+        }
+    }
+
+    std::cout << "Successfully loaded a Sudoku field!" << std::endl;
+    m_has_field = true;
 }
 
 bool SudokuField::can_place(int number, int row, int column) const
@@ -59,6 +93,11 @@ bool SudokuField::can_place(int number, int row, int column) const
 bool SudokuField::is_preset(int row, int column) const
 {
     return m_preset_coordinates.find({ row, column }) != m_preset_coordinates.end();
+}
+
+bool SudokuField::has_field() const
+{
+    return m_has_field;
 }
 
 void SudokuField::print_grid() const

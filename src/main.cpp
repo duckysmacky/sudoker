@@ -54,7 +54,7 @@ static void parse_args(const std::vector<std::string_view>& args, SudokuField& f
             solver.hide_grid(true);
     }
 
-    field.fill_grid(fill_count);
+    field.generate_grid(fill_count);
 }
 
 int main(int argc, char* argv[])
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     system("clear");
     field.print_grid();
     std::cout << "Ready to solve. Press ENTER to start solving" << std::endl;
-    std::cin.get();
+    while (std::cin.get() != '\n') {}
 
     // record time taken
     auto time_start = std::chrono::high_resolution_clock::now();

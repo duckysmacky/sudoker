@@ -15,6 +15,12 @@ void SudokuSolver::solve()
     int iteration = 0;
     bool can_place = true;
 
+    if (!m_field.has_field())
+    {
+        std::cerr << "Unable to solve a Sudoku field: no field has been generated or loaded" << std::endl;
+        return;
+    }
+
     std::cout << "Started solving..." << std::endl;
     while (true)
     {
